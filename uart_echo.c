@@ -1,62 +1,7 @@
-//*****************************************************************************
-//
-// uart_echo.c - Example for reading data from and writing data to the UART in
-//               an interrupt driven fashion.
-//
-// Copyright (c) 2013-2014 Texas Instruments Incorporated.  All rights reserved.
-// Software License Agreement
-// 
-// Texas Instruments (TI) is supplying this software for use solely and
-// exclusively on TI's microcontroller products. The software is owned by
-// TI and/or its suppliers, and is protected under applicable copyright
-// laws. You may not combine this software with "viral" open-source
-// software in order to form a larger program.
-// 
-// THIS SOFTWARE IS PROVIDED "AS IS" AND WITH ALL FAULTS.
-// NO WARRANTIES, WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT
-// NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-// A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. TI SHALL NOT, UNDER ANY
-// CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR CONSEQUENTIAL
-// DAMAGES, FOR ANY REASON WHATSOEVER.
-// 
-// This is part of revision 2.1.0.12573 of the EK-TM4C1294XL Firmware Package.
-//
-//*****************************************************************************
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <stm32f0xx.h>
-
-//*****************************************************************************
-//
-//! \addtogroup example_list
-//! <h1>UART Echo (uart_echo)</h1>
-//!
-//! This example application utilizes the UART to echo text.  The first UART
-//! (connected to the USB debug virtual serial port on the evaluation board)
-//! will be configured in 115,200 baud, 8-n-1 mode.  All characters received on
-//! the UART are transmitted back to the UART.
-//
-//*****************************************************************************
-
-//****************************************************************************
-//
-// System clock rate in Hz.
-//
-//****************************************************************************
-uint32_t g_ui32SysClock;
-
-//*****************************************************************************
-//
-// The error routine that is called if the driver library encounters an error.
-//
-//*****************************************************************************
-#ifdef DEBUG
-void
-__error__(char *pcFilename, uint32_t ui32Line)
-{
-}
-#endif
+#include "socket.h"
 #define rt_hw_led1_on()   GPIO_SetBits(GPIOA, GPIO_Pin_4)
 #define rt_hw_led1_off()  GPIO_ResetBits(GPIOA, GPIO_Pin_4)
 #define UART1_GPIO_TX			GPIO_Pin_2
@@ -78,16 +23,10 @@ int uart_config()
 {
 	USART_InitTypeDef USART_InitStructure;
 	GPIO_InitTypeDef GPIO_InitStructure;
-	/*rbuffer=rt_malloc(sizeof(struct serial_ringbuffer));
-	rt_memset(rbuffer->buffer, 0, sizeof(rbuffer->buffer));
-	rbuffer->put_index = 0;
-	rbuffer->get_index = 0;
-*/
 	/* Enable GPIO clock */
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
 	/* Enable USART clock */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, ENABLE);
-
 
 	/* Connect PXx to USARTx_Tx */
 	GPIO_PinAFConfig(UART1_GPIO, UART1_GPIO_TX_SOURCE, UART1_GPIO_AF);
@@ -126,12 +65,12 @@ int uart_config()
 	USART_Cmd(USART1, ENABLE);
 	return 0;
 }
-int uart_send(int index,unsigned char byte)
+int uart_send(unsigned char byte)
 {
 	while (!(USART1->ISR & USART_FLAG_TXE));
 	USART1->TDR = byte;
 }
-char uart_recv(int index)
+char uart_recv()
 {
 	char ch;
 	ch = -1;
@@ -141,24 +80,17 @@ char uart_recv(int index)
 		
 	}
 	return ch;
-
 }
 void USART1_IRQHandler(void)
 {
-
 	int ch=-1;
-	/* enter interrupt */
-	
-	//rt_interrupt_enter();
 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
 		while (1)
 		{
-			ch = uart_recv(0);
+			ch = uart_recv();
 			if (ch == 0xff)
 			break;
-			uart_send(0,ch);
-			//serial_ringbuffer_putc(rbuffer, ch);
 		}
 		/* clear interrupt */
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
@@ -168,10 +100,20 @@ void USART1_IRQHandler(void)
 		/* clear interrupt */
 		USART_ClearITPendingBit(USART1, USART_IT_TC);
 	}
-	/* leave interrupt */
-	//rt_interrupt_leave();
 }
-
+void led_init()
+{
+    GPIO_InitTypeDef  GPIO_InitStructure;
+    /* Enable the GPIO_LED Clock */
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+    /* Configure the GPIO_LED pin */
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+}
 //*****************************************************************************
 //
 // This example demonstrates how to send a string of data to the UART.
@@ -180,34 +122,60 @@ void USART1_IRQHandler(void)
 int
 main(void)
 {
-    GPIO_InitTypeDef  GPIO_InitStructure;
-
-    /* Enable the GPIO_LED Clock */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA|RCC_AHBPeriph_GPIOB, ENABLE);
-
-    /* Configure the GPIO_LED pin */
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-    GPIO_ResetBits(GPIOA, GPIO_Pin_9);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
 	uart_config();
+	led_init();
+	config conf;
+	conf.local_ip[0]=192;
+	conf.local_ip[1]=168;
+	conf.local_ip[2]=1;
+	conf.local_ip[3]=11;
+	conf.local_port[0]=11;
+	conf.local_port[1]=33;
+	conf.sub_msk[0]=255;
+	conf.sub_msk[1]=255;
+	conf.sub_msk[2]=255;
+	conf.sub_msk[3]=0;
+	conf.gw[0]=192;
+	conf.gw[1]=168;
+	conf.gw[2]=1;
+	conf.gw[3]=1;
+	conf.mac[0]=0xe3;
+	conf.mac[1]=0x90;
+	conf.mac[2]=0x12;
+	conf.mac[3]=0x2d;
+	conf.mac[4]=0xef;
+	conf.mac[5]=0x33;
+	conf.remote_ip[0]=192;
+	conf.remote_ip[1]=168;
+	conf.remote_ip[2]=1;
+	conf.remote_ip[3]=12;
+	conf.remote_port[0]=22;
+	conf.remote_port[1]=33;
+	conf.protol=NET_PROTOL_TCP;
+	conf.server_mode=CLIENT_MODE;
+	conf.uart_baud=BAUD_921600;
+	ind_out(0);
+	config_param(CONFIG_LOCAL_IP,&conf);
+	config_param(CONFIG_LOCAL_PORT,&conf);
+	config_param(CONFIG_GW,&conf);
+	config_param(CONFIG_SUB_MSK,&conf);
+	config_param(CONFIG_MAC,&conf);
+	config_param(CONFIG_REMOTE_IP,&conf);
+	config_param(CONFIG_REMOTE_PORT,&conf);
+	config_param(CONFIG_PROTOL,&conf);
+	config_param(CONFIG_SERVER_MODE,&conf);
+	config_param(CONFIG_UART_BAUD,&conf);
+	ind_out(1);
     //
     // Loop forever echoing data through the UART.
     //
-    while(1)
+    while(cnn_in()==0)
     {
 		rt_hw_led1_on();
-		uart_send(0,'A');
+		uart_send('A');
 		delay(10);
 		rt_hw_led1_off();
-		uart_send(0,'B');
+		uart_send('B');
 		delay(10);
     }
 }

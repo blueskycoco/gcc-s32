@@ -60,6 +60,7 @@ ${COMPILER}:
 #
 ${COMPILER}/uart_echo.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/system_stm32f0xx.o
+${COMPILER}/uart_echo.axf: ${COMPILER}/socket.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/uart_echo.o
 ${COMPILER}/uart_echo.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/uart_echo.axf: uart_echo.ld
