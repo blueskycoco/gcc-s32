@@ -124,6 +124,7 @@ main(void)
 {
 	uart_config();
 	led_init();
+	ind_cnn_init();	
 	config conf;
 	conf.local_ip[0]=192;
 	conf.local_ip[1]=168;
@@ -169,7 +170,7 @@ main(void)
     //
     // Loop forever echoing data through the UART.
     //
-    while(cnn_in()==0)
+    while(cnn_in()==1)
     {
 		rt_hw_led1_on();
 		uart_send('A');

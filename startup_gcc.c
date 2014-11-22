@@ -66,55 +66,55 @@ static uint32_t pui32Stack[64];
 __attribute__ ((section(".isr_vector")))
 void (* const g_pfnVectors[])(void) =
 {
-    (void (*)(void))((uint32_t)pui32Stack + sizeof(pui32Stack)),
-                                            // The initial stack pointer
-    ResetISR,                               // The reset handler
-    NmiSR,                                  // The NMI handler
-    FaultISR,                               // The hard fault handler
-    0,                      				// The MPU fault handler
-    0,                      				// The bus fault handler
-    0,                      				// The usage fault handler
-    0,                                      // Reserved
-    0,                                      // Reserved
-    0,                                      // Reserved
-    0,                                      // Reserved
-    IntDefaultHandler,                      // SVCall handler
-    0,                      				// Debug monitor handler
-    0,                                      // Reserved
-    IntDefaultHandler,                      // The PendSV handler
-    IntDefaultHandler,                      // The SysTick handler
-    IntDefaultHandler,                      // WWDG_IRQHandler
-    0,                      				// Reserved
-    IntDefaultHandler,                      // RTC_IRQHandler
-    IntDefaultHandler,                      // FLASH_IRQHandler
-    IntDefaultHandler,                      // RCC_IRQHandler
-    IntDefaultHandler,                      // EXTI0_1_IRQHandler
-    IntDefaultHandler,                      // EXTI2_3_IRQHandler
-    IntDefaultHandler,                      // EXTI4_15_IRQHandler
-    0,                      				// Reserved
-    IntDefaultHandler,                      // DMA1_Channel1_IRQHandler
-    IntDefaultHandler,                      // DMA1_Channel2_3_IRQHandler
-    IntDefaultHandler,                      // DMA1_Channel4_5_IRQHandler
-    IntDefaultHandler,                      // ADC1_IRQHandler
-    IntDefaultHandler,                      // TIM1_BRK_UP_TRG_COM_IRQHandler
-    IntDefaultHandler,                      // TIM1_CC_IRQHandler
-    0,                      				// Reserved
-    IntDefaultHandler,                      // TIM3_IRQHandler
-    0,                      				// Reserved
-    0,                      				// Reserved
-    IntDefaultHandler,                      // TIM14_IRQHandler
-    IntDefaultHandler,                      // TIM15_IRQHandler
-    IntDefaultHandler,                      // TIM16_IRQHandler
-    IntDefaultHandler,                      // TIM17_IRQHandler
-    IntDefaultHandler,                      // I2C1_IRQHandler
-    IntDefaultHandler,                      // I2C2_IRQHandler
-    IntDefaultHandler,                      // SPI1_IRQHandler
-    IntDefaultHandler,                      // SPI2_IRQHandler
-    USART1_IRQHandler,                      // USART1_IRQHandler
-    IntDefaultHandler,                      // USART2_IRQHandler
-    0,                      				// Reserved
-    0,                      				// Reserved
-    0,                      				// Reserved    
+	(void (*)(void))((uint32_t)pui32Stack + sizeof(pui32Stack)),
+	// The initial stack pointer
+	ResetISR,                               // The reset handler
+	NmiSR,                                  // The NMI handler
+	FaultISR,                               // The hard fault handler
+	0,                      				// The MPU fault handler
+	0,                      				// The bus fault handler
+	0,                      				// The usage fault handler
+	0,                                      // Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
+	IntDefaultHandler,                      // SVCall handler
+	0,                      				// Debug monitor handler
+	0,                                      // Reserved
+	IntDefaultHandler,                      // The PendSV handler
+	IntDefaultHandler,                      // The SysTick handler
+	IntDefaultHandler,                      // WWDG_IRQHandler
+	0,                      				// Reserved
+	IntDefaultHandler,                      // RTC_IRQHandler
+	IntDefaultHandler,                      // FLASH_IRQHandler
+	IntDefaultHandler,                      // RCC_IRQHandler
+	IntDefaultHandler,                      // EXTI0_1_IRQHandler
+	IntDefaultHandler,                      // EXTI2_3_IRQHandler
+	IntDefaultHandler,                      // EXTI4_15_IRQHandler
+	0,                      				// Reserved
+	IntDefaultHandler,                      // DMA1_Channel1_IRQHandler
+	IntDefaultHandler,                      // DMA1_Channel2_3_IRQHandler
+	IntDefaultHandler,                      // DMA1_Channel4_5_IRQHandler
+	IntDefaultHandler,                      // ADC1_IRQHandler
+	IntDefaultHandler,                      // TIM1_BRK_UP_TRG_COM_IRQHandler
+	IntDefaultHandler,                      // TIM1_CC_IRQHandler
+	0,                      				// Reserved
+	IntDefaultHandler,                      // TIM3_IRQHandler
+	0,                      				// Reserved
+	0,                      				// Reserved
+	IntDefaultHandler,                      // TIM14_IRQHandler
+	IntDefaultHandler,                      // TIM15_IRQHandler
+	IntDefaultHandler,                      // TIM16_IRQHandler
+	IntDefaultHandler,                      // TIM17_IRQHandler
+	IntDefaultHandler,                      // I2C1_IRQHandler
+	IntDefaultHandler,                      // I2C2_IRQHandler
+	IntDefaultHandler,                      // SPI1_IRQHandler
+	IntDefaultHandler,                      // SPI2_IRQHandler
+	USART1_IRQHandler,                      // USART1_IRQHandler
+	IntDefaultHandler,                      // USART2_IRQHandler
+	0,                      				// Reserved
+	0,                      				// Reserved
+	0,                      				// Reserved    
 	BootRAM
 };
 
@@ -141,33 +141,33 @@ extern uint32_t _ebss;
 // application.
 //
 //*****************************************************************************
-void
+	void
 ResetISR(void)
 {
-    uint32_t *pui32Src, *pui32Dest;
+	uint32_t *pui32Src, *pui32Dest;
 
-    //
-    // Copy the data segment initializers from flash to SRAM.
-    //
-    pui32Src = &_etext;
-    for(pui32Dest = &_data; pui32Dest < &_edata; )
-    {
-        *pui32Dest++ = *pui32Src++;
-    }
+	//
+	// Copy the data segment initializers from flash to SRAM.
+	//
+	pui32Src = &_etext;
+	for(pui32Dest = &_data; pui32Dest < &_edata; )
+	{
+		*pui32Dest++ = *pui32Src++;
+	}
 
-    //
-    // Zero fill the bss segment.
-    //
+	//
+	// Zero fill the bss segment.
+	//
 	for(pui32Dest = &_bss; pui32Dest < &_ebss; )
-    {
-        *pui32Dest++ = 0;
-    }
-    
-    //
-    // Call the application's entry point.
-    //
+	{
+		*pui32Dest++ = 0;
+	}
+
+	//
+	// Call the application's entry point.
+	//
 	SystemInit();
-    main();
+	main();
 }
 
 //*****************************************************************************
@@ -177,15 +177,15 @@ ResetISR(void)
 // by a debugger.
 //
 //*****************************************************************************
-static void
+	static void
 NmiSR(void)
 {
-    //
-    // Enter an infinite loop.
-    //
-    while(1)
-    {
-    }
+	//
+	// Enter an infinite loop.
+	//
+	while(1)
+	{
+	}
 }
 
 //*****************************************************************************
@@ -195,15 +195,15 @@ NmiSR(void)
 // for examination by a debugger.
 //
 //*****************************************************************************
-static void
+	static void
 FaultISR(void)
 {
-    //
-    // Enter an infinite loop.
-    //
-    while(1)
-    {
-    }
+	//
+	// Enter an infinite loop.
+	//
+	while(1)
+	{
+	}
 }
 
 //*****************************************************************************
@@ -213,13 +213,13 @@ FaultISR(void)
 // for examination by a debugger.
 //
 //*****************************************************************************
-static void
+	static void
 IntDefaultHandler(void)
 {
-    //
-    // Go into an infinite loop.
-    //
-    while(1)
-    {
-    }
+	//
+	// Go into an infinite loop.
+	//
+	while(1)
+	{
+	}
 }

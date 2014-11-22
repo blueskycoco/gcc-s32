@@ -48,6 +48,8 @@ all: ${COMPILER}/uart_echo.axf
 #
 clean:
 	@rm -rf ${COMPILER} ${wildcard *~}
+install:
+	openocd -f openocd.cfg -c "flash_image"
 
 #
 # The rule to create the target directory.
