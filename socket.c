@@ -29,7 +29,7 @@ void ind_cnn_init()
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 void ind_out(int level)
@@ -41,7 +41,7 @@ void ind_out(int level)
 }
 int cnn_in()
 {
-	return (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_1)==SET);
+	return (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5)==SET);
 }
 int config_param(int type,pconfig conf)
 {

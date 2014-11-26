@@ -155,7 +155,7 @@ main(void)
 	conf.protol=NET_PROTOL_TCP;
 	conf.server_mode=CLIENT_MODE;
 	conf.uart_baud=BAUD_921600;
-	ind_out(0);
+	ind_out(1);
 	config_param(CONFIG_LOCAL_IP,&conf);
 	config_param(CONFIG_LOCAL_PORT,&conf);
 	config_param(CONFIG_GW,&conf);
@@ -166,7 +166,7 @@ main(void)
 	config_param(CONFIG_PROTOL,&conf);
 	config_param(CONFIG_SERVER_MODE,&conf);
 	config_param(CONFIG_UART_BAUD,&conf);
-	ind_out(1);
+	ind_out(0);
     //
     // Loop forever echoing data through the UART.
     //
