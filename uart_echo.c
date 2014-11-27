@@ -153,8 +153,8 @@ main(void)
 	conf.remote_port[0]=22;
 	conf.remote_port[1]=33;
 	conf.protol=NET_PROTOL_TCP;
-	conf.server_mode=CLIENT_MODE;
-	conf.uart_baud=BAUD_460800;
+	conf.server_mode=SERVER_MODE;
+	conf.uart_baud=BAUD_921600;
 	ind_out(1);
 	config_param(CONFIG_LOCAL_IP,&conf);
 	config_param(CONFIG_LOCAL_PORT,&conf);
