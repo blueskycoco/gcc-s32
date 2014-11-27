@@ -154,7 +154,7 @@ main(void)
 	conf.remote_port[1]=33;
 	conf.protol=NET_PROTOL_TCP;
 	conf.server_mode=CLIENT_MODE;
-	conf.uart_baud=BAUD_921600;
+	conf.uart_baud=BAUD_460800;
 	ind_out(1);
 	config_param(CONFIG_LOCAL_IP,&conf);
 	config_param(CONFIG_LOCAL_PORT,&conf);
@@ -170,13 +170,15 @@ main(void)
     //
     // Loop forever echoing data through the UART.
     //
-    while(cnn_in()==1)
+    while(cnn_in()==0)
     {
 		rt_hw_led1_on();
 		uart_send('A');
+		//ind_out(0);
 		delay(10);
 		rt_hw_led1_off();
 		uart_send('B');
+		//ind_out(1);
 		delay(10);
     }
 }

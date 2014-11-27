@@ -26,22 +26,22 @@ void ind_cnn_init()
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 void ind_out(int level)
 {
 	if(level)
-		GPIO_SetBits(GPIOA,GPIO_Pin_0);
+		GPIO_SetBits(GPIOA,GPIO_Pin_5);
 	else
-		GPIO_ResetBits(GPIOA,GPIO_Pin_0);
+		GPIO_ResetBits(GPIOA,GPIO_Pin_5);
 }
 int cnn_in()
 {
-	return (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_5)==SET);
+	return (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==SET);
 }
 int config_param(int type,pconfig conf)
 {
@@ -92,7 +92,7 @@ int config_param(int type,pconfig conf)
 		case CONFIG_REMOTE_IP:
 			{
 				len=11;
-				ptr=config_socket0_ip;
+				ptr=config_socket3_ip;
 				for(i=0;i<4;i++)
 					ptr[3+i]=conf->remote_ip[i];
 			}
@@ -100,7 +100,7 @@ int config_param(int type,pconfig conf)
 		case CONFIG_REMOTE_PORT:
 			{
 				len=9;
-				ptr=config_socket0_port;
+				ptr=config_socket3_port;
 				for(i=0;i<2;i++)
 					ptr[3+i]=conf->remote_port[i];
 			}
@@ -109,14 +109,14 @@ int config_param(int type,pconfig conf)
 			{
 				len=11;
 				ptr=config_net_protol;
-				ptr[3+0]=conf->protol;
+				ptr[3+1]=conf->protol;
 			}
 			break;
 		case CONFIG_SERVER_MODE:
 			{
 				len=11;
 				ptr=config_socket_mode;
-				ptr[3+0]=conf->server_mode;
+				ptr[3+2]=conf->server_mode;
 			}
 			break;
 		case CONFIG_UART_BAUD:
