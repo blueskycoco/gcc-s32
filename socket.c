@@ -15,7 +15,9 @@ unsigned char config_socket_port[9]	={0xF5,0x8A,0x09,0xff,0xff,0x26,0xfa,0x00,0x
 unsigned char config_net_protol[8]		={0xF5,0x8A,0x0d,0xff,0x26,0xfa,0x00,0x00};/*protol*/
 unsigned char config_socket_mode[8]	={0xF5,0x8A,0x0e,0xff,0x26,0xfa,0x00,0x00};/*server mode*/
 unsigned char config_uart_baud[8]		={0xF5,0x8A,0x0f,0xff,0x26,0xfa,0x00,0x00};/*uart baud*/
-unsigned char get_config[62];//			={0xF5,0x8B,0x0f,0xff,0xff,0xff,0xff,0x27,0xfa,0x00,0x00};/*get config 0xf5,0x8b,********0x27,0xfa,0x00,0x00*/
+unsigned char get_config[35];//			={0xF5,0x8B,0x0f,0xff,0xff,0xff,0xff,0x27,0xfa,0x00,0x00};/*get config 0xf5,0x8b,********0x27,0xfa,0x00,0x00*/
+#define IND GPIO_Pin_5
+#define CNN GPIO_Pin_0
 void ind_cnn_init()
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
@@ -26,22 +28,59 @@ void ind_cnn_init()
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
+    GPIO_InitStructure.GPIO_Pin = IND;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_InitStructure.GPIO_Pin = CNN;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 void ind_out(int level)
 {
 	if(level)
-		GPIO_SetBits(GPIOA,GPIO_Pin_5);
+		GPIO_SetBits(GPIOA,IND);
 	else
-		GPIO_ResetBits(GPIOA,GPIO_Pin_5);
+		GPIO_ResetBits(GPIOA,IND);
 }
 int cnn_in()
 {
-	return (GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0)==SET);
+	return (GPIO_ReadInputDataBit(GPIOA,CNN)==SET);
+}
+int read_param()
+{
+	int ch,i=0,crc=0;
+	char dat;
+	uart_send(0xf5);
+	uart_send(0x8b);
+	while(1){
+		if(uart_recv(&dat)!=0xff)
+		{		
+			uart_send(dat);
+			if(dat==0xf5)
+			break;
+		}
+			}
+	while(1){
+		if(uart_recv(&dat)!=0xff)			
+		{
+			uart_send(dat);
+			if(dat==0x8c)
+			break;
+		}
+			}
+	crc=0xf5+0xfc;
+	while(uart_recv(&dat)!=0xff)
+	{
+		uart_send(dat);
+		get_config[i+2]=dat;
+		i++;
+		crc=crc+dat;
+		if(i==33)
+		break;
+	}
+	if(crc==((get_config[33]<<8)|get_config[31])*2)
+		return 1;
+	else
+		return 0;
 }
 int config_param(int type,pconfig conf)
 {

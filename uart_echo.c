@@ -70,13 +70,13 @@ int uart_send(unsigned char byte)
 	while (!(USART1->ISR & USART_FLAG_TXE));
 	USART1->TDR = byte;
 }
-char uart_recv()
+char uart_recv(char *dat)
 {
 	char ch;
 	ch = -1;
 	if (USART1->ISR & USART_FLAG_RXNE)
 	{
-		ch = USART1->RDR & 0xff;
+		*dat = USART1->RDR & 0xff;
 		
 	}
 	return ch;
@@ -84,13 +84,17 @@ char uart_recv()
 void USART1_IRQHandler(void)
 {
 	int ch=-1;
+	char dat;
 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
 		while (1)
 		{
-			ch = uart_recv();
+			ch = uart_recv(&dat);
 			if (ch == 0xff)
-			break;
+			{
+				uart_send(dat);
+				break;
+			}
 		}
 		/* clear interrupt */
 		USART_ClearITPendingBit(USART1, USART_IT_RXNE);
@@ -129,9 +133,9 @@ main(void)
 	conf.local_ip[0]=192;
 	conf.local_ip[1]=168;
 	conf.local_ip[2]=1;
-	conf.local_ip[3]=11;
+	conf.local_ip[3]=13;
 	conf.local_port[0]=11;
-	conf.local_port[1]=33;
+	conf.local_port[1]=34;
 	conf.sub_msk[0]=255;
 	conf.sub_msk[1]=255;
 	conf.sub_msk[2]=255;
@@ -149,13 +153,14 @@ main(void)
 	conf.remote_ip[0]=192;
 	conf.remote_ip[1]=168;
 	conf.remote_ip[2]=1;
-	conf.remote_ip[3]=12;
-	conf.remote_port[0]=22;
+	conf.remote_ip[3]=122;
+	conf.remote_port[0]=0xef;
 	conf.remote_port[1]=33;
 	conf.protol=NET_PROTOL_TCP;
-	conf.server_mode=SERVER_MODE;
-	conf.uart_baud=BAUD_921600;
+	conf.server_mode=CLIENT_MODE;
+	conf.uart_baud=BAUD_115200;
 	ind_out(1);
+	delay(5);
 	config_param(CONFIG_LOCAL_IP,&conf);
 	config_param(CONFIG_LOCAL_PORT,&conf);
 	config_param(CONFIG_GW,&conf);
@@ -166,7 +171,10 @@ main(void)
 	config_param(CONFIG_PROTOL,&conf);
 	config_param(CONFIG_SERVER_MODE,&conf);
 	config_param(CONFIG_UART_BAUD,&conf);
+	//read_param();
+	delay(5);
 	ind_out(0);
+	uart_send('A');
     //
     // Loop forever echoing data through the UART.
     //
