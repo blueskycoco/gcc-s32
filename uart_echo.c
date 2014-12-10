@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stm32f0xx.h>
 #include "socket.h"
-#define rt_hw_led1_on()   GPIO_SetBits(GPIOB, GPIO_Pin_1)
-#define rt_hw_led1_off()  GPIO_ResetBits(GPIOB, GPIO_Pin_1)
+#define rt_hw_led1_on()   GPIO_SetBits(GPIOF, GPIO_Pin_0)
+#define rt_hw_led1_off()  GPIO_ResetBits(GPIOF, GPIO_Pin_0)
 #define UART1_GPIO_TX			GPIO_Pin_2
 #define UART1_GPIO_TX_SOURCE	GPIO_PinSource2
 #define UART1_GPIO_RX			GPIO_Pin_3
@@ -109,14 +109,20 @@ void led_init()
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
     /* Enable the GPIO_LED Clock */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB|RCC_AHBPeriph_GPIOA, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF|RCC_AHBPeriph_GPIOA, ENABLE);
     /* Configure the GPIO_LED pin */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    //GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_Init(GPIOF, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
 }
 //*****************************************************************************
 //
@@ -177,20 +183,28 @@ main(void)
 	ind_out(0);
 	uart_send('A');
 	#endif
+		GPIO_SetBits(GPIOF, GPIO_Pin_0);
+	GPIO_SetBits(GPIOA, GPIO_Pin_4);
+	delay(1);
+	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
+	delay(1);
+	GPIO_SetBits(GPIOA, GPIO_Pin_4);
+	delay(1);
 	E2promWriteByte(0x40,0x04,0x8a);
 	E2promWriteByte(0x40,0x04,0x01);
     //
     // Loop forever echoing data through the UART.
     //
-    while(cnn_in()==0)
+
+    while(1)
     {
 		rt_hw_led1_on();
 		//uart_send('A');
 		//ind_out(0);
-		delay(10);
+		delay(5);
 		rt_hw_led1_off();
 		//uart_send('B');
 		//ind_out(1);
-		delay(10);
+		delay(5);
     }
 }

@@ -4,7 +4,7 @@
 void DelayMs(int delay)
 {
 	volatile long i,j;
-	for(i=0;i<delay*1000000;i++)
+	for(i=0;i<delay*1000;i++)
 		j=1;
 }
 unsigned char I2CReadByte( void )
