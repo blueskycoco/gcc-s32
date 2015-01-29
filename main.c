@@ -132,6 +132,7 @@ void led_init()
 int
 main(void)
 {
+	delay_init(48);
 	uart_config();
 	led_init();
 	#if 0
@@ -183,13 +184,13 @@ main(void)
 	ind_out(0);
 	uart_send('A');
 	#endif
-		GPIO_SetBits(GPIOF, GPIO_Pin_0);
+	GPIO_SetBits(GPIOF, GPIO_Pin_0);
 	GPIO_SetBits(GPIOA, GPIO_Pin_4);
-	delay(1);
+	delay_ms(100);
 	GPIO_ResetBits(GPIOA, GPIO_Pin_4);
-	delay(1);
+	delay_ms(100);
 	GPIO_SetBits(GPIOA, GPIO_Pin_4);
-	delay(1);
+	delay_ms(100);
 	E2promWriteByte(0x40,0x04,0x8a);
 	E2promWriteByte(0x40,0x04,0x01);
     //
@@ -201,10 +202,10 @@ main(void)
 		rt_hw_led1_on();
 		//uart_send('A');
 		//ind_out(0);
-		delay(5);
+		delay_ms(50);
 		rt_hw_led1_off();
 		//uart_send('B');
 		//ind_out(1);
-		delay(5);
+		delay_ms(50);
     }
 }
