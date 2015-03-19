@@ -66,6 +66,8 @@ ${COMPILER}/uart_echo.axf: ${COMPILER}/socket.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/main.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/delay.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/i2c_gpio.o
+${COMPILER}/uart_echo.axf: ${COMPILER}/si446x_interface.o
+${COMPILER}/uart_echo.axf: ${COMPILER}/si446x_common.o
 ${COMPILER}/uart_echo.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/uart_echo.axf: stm32f030.ld
 SCATTERgcc_uart_echo=stm32f030.ld
