@@ -63,11 +63,12 @@ ${COMPILER}:
 ${COMPILER}/uart_echo.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/system_stm32f0xx.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/socket.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/uart_echo.o
+${COMPILER}/uart_echo.axf: ${COMPILER}/main.o
+${COMPILER}/uart_echo.axf: ${COMPILER}/delay.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/i2c_gpio.o
 ${COMPILER}/uart_echo.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
-${COMPILER}/uart_echo.axf: uart_echo.ld
-SCATTERgcc_uart_echo=uart_echo.ld
+${COMPILER}/uart_echo.axf: stm32f030.ld
+SCATTERgcc_uart_echo=stm32f030.ld
 ENTRY_uart_echo=ResetISR
 CFLAGSgcc=-DUSE_STDPERIPH_DRIVER
 
