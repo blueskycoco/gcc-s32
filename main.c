@@ -11,7 +11,6 @@
 #define UART1_GPIO_RX_SOURCE	GPIO_PinSource3
 #define UART1_GPIO_AF			GPIO_AF_1
 #define UART1_GPIO				GPIOA
-unsigned char  buffer[64] = {'0','0','0','0','0',0};
 
 int uart_config()
 {
@@ -91,40 +90,7 @@ void led_init()
 // This example demonstrates how to send a string of data to the UART.
 //
 //*****************************************************************************
-void si446x_rw(unsigned char *buf,int len,unsigned char *out,int *out_len)
-{
-	unsigned char  int_status[5] = {'0','0','0','0'};
-	int length=0;	
-	//out=(unsigned char *)malloc(255*sizeof(unsigned char));
-	while(1)
-	{
-		SI446X_INT_STATUS( int_status );
-		if(!(int_status[3]&(1<<4)))
-			break;
-		else
-		{
-			length += SI446X_READ_PACKET(out);			
-		}
-	}
-	if(buf!=0)
-	{
-		SI446X_SEND_PACKET( buf, len, 0, 0 );
-		do
-		{ 	
-			SI446X_INT_STATUS(int_status);
-		}while(!(int_status[3] & ( 1<<5 ) ) );
-		SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
-	}
-	if(length==0)
-	{
-		//free(out);
-		//out=0;
-		*out_len=0;		
-	}
-	else
-		*out_len=length;
-	return ;
-}
+
 int
 main(void)
 {
@@ -133,9 +99,7 @@ main(void)
 	delay_init(48);
 	uart_config();
 	led_init();
-	SI446X_RESET( );        //SI446X 模块复位
-    SI446X_CONFIG_INIT( );  //SI446X 模块初始化配置函数
-    SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
+	si4464_init();
 	while( 1 )
     {
 		rt_hw_led1_off();

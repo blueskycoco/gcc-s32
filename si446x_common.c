@@ -537,6 +537,44 @@ void SI446X_GPIO_CONFIG( unsigned char G0, unsigned char G1, unsigned char G2, u
     SI446X_CMD( cmd, 8 );
     SI446X_READ_RESPONSE( cmd, 8 );
 }
+void si446x_rw(unsigned char *buf,int len,unsigned char *out,int *out_len)
+{
+	unsigned char  int_status[5] = {'0','0','0','0'};
+	int length=0;	
+	while(1)
+	{
+		SI446X_INT_STATUS( int_status );
+		if(!(int_status[3]&(1<<4)))
+			break;
+		else
+		{
+			length += SI446X_READ_PACKET(out);			
+		}
+	}
+	if(buf!=0)
+	{
+		SI446X_SEND_PACKET( buf, len, 0, 0 );
+		do
+		{ 	
+			SI446X_INT_STATUS(int_status);
+		}while(!(int_status[3] & ( 1<<5 ) ) );
+		SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
+	}
+	if(length==0)
+	{
+		*out_len=0;		
+	}
+	else
+		*out_len=length;
+	return ;
+}
+void si4464_init()
+{
+	SI446X_RESET( );		//SI446X 模块复位
+	SI446X_CONFIG_INIT( );	//SI446X 模块初始化配置函数
+	SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
+}
+
 /*
 =================================================================================
 ------------------------------------End of FILE----------------------------------

@@ -107,6 +107,9 @@ void SI446X_RX_FIFO_RESET( void );
 
 /*reset the TX FIFO of the device*/
 void SI446X_TX_FIFO_RESET( void );
+void si446x_rw(unsigned char *buf,int len,unsigned char *out,int *out_len);
+void si446x_rw(unsigned char *buf,int len,unsigned char *out,int *out_len);
+
 /*
 =================================================================================
 ----------------------------PROPERTY fast setting macros-------------------------
