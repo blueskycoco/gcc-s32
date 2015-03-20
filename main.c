@@ -91,9 +91,45 @@ void led_init()
 // This example demonstrates how to send a string of data to the UART.
 //
 //*****************************************************************************
+void si446x_rw(unsigned char *buf,int len,unsigned char *out,int *out_len)
+{
+	unsigned char  int_status[5] = {'0','0','0','0'};
+	int length=0;	
+	//out=(unsigned char *)malloc(255*sizeof(unsigned char));
+	while(1)
+	{
+		SI446X_INT_STATUS( int_status );
+		if(!(int_status[3]&(1<<4)))
+			break;
+		else
+		{
+			length += SI446X_READ_PACKET(out);			
+		}
+	}
+	if(buf!=0)
+	{
+		SI446X_SEND_PACKET( buf, len, 0, 0 );
+		do
+		{ 	
+			SI446X_INT_STATUS(int_status);
+		}while(!(int_status[3] & ( 1<<5 ) ) );
+		SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
+	}
+	if(length==0)
+	{
+		//free(out);
+		//out=0;
+		*out_len=0;		
+	}
+	else
+		*out_len=length;
+	return ;
+}
 int
 main(void)
 {
+	unsigned char rx_buf[255];
+	int rx_len;
 	delay_init(48);
 	uart_config();
 	led_init();
@@ -103,6 +139,7 @@ main(void)
 	while( 1 )
     {
 		rt_hw_led1_off();
+		#if 0
 		SI446X_INT_STATUS( buffer );
 		if( buffer[3] & ( 1<<4 ) )
 		{			
@@ -117,6 +154,13 @@ main(void)
 
 			SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
 
+		}
+		#endif
+		si446x_rw("1234",4,rx_buf,&rx_len);
+		if(rx_len!=0)
+		{
+			rt_hw_led1_on();
+			uart_send('A');
 		}
 	}
 }
