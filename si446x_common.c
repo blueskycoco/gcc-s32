@@ -261,7 +261,8 @@ OUTPUT   : NONE
 */
 void SI446X_RESET( void )
 {
-    unsigned int x = 255;
+    unsigned int x = 255;	
+	GPIO_Initial();
     SI_SDN_HIGH();
     while( x-- );
     SI_SDN_LOW();
@@ -279,7 +280,7 @@ void SI446X_CONFIG_INIT( void )
 {
     unsigned char i;
     unsigned int j = 0;
-
+	SPI_Initial();
     while( ( i = config_table[j] ) != 0 )
     {
         j += 1;

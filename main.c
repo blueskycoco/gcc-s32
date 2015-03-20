@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stm32f0xx.h>
 #include "socket.h"
+#include "si446x.h"
 #define rt_hw_led1_on()   GPIO_SetBits(GPIOF, GPIO_Pin_0)
 #define rt_hw_led1_off()  GPIO_ResetBits(GPIOF, GPIO_Pin_0)
 #define UART1_GPIO_TX			GPIO_Pin_2
@@ -10,6 +11,7 @@
 #define UART1_GPIO_RX_SOURCE	GPIO_PinSource3
 #define UART1_GPIO_AF			GPIO_AF_1
 #define UART1_GPIO				GPIOA
+unsigned char  buffer[64] = {'0','0','0','0','0',0};
 
 int uart_config()
 {
@@ -95,16 +97,26 @@ main(void)
 	delay_init(48);
 	uart_config();
 	led_init();
-
-    while(1)
+	SI446X_RESET( );        //SI446X 模块复位
+    SI446X_CONFIG_INIT( );  //SI446X 模块初始化配置函数
+    SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
+	while( 1 )
     {
-		rt_hw_led1_on();
-		//uart_send('A');
-		//ind_out(0);
-		delay_ms(50);
 		rt_hw_led1_off();
-		//uart_send('B');
-		//ind_out(1);
-		delay_ms(50);
-    }
+		SI446X_INT_STATUS( buffer );
+		if( buffer[3] & ( 1<<4 ) )
+		{			
+			int  length = SI446X_READ_PACKET( buffer );
+			rt_hw_led1_on();
+			uart_send('A');
+			SI446X_SEND_PACKET( buffer, length, 0, 0 );
+			do
+			{ 	
+				SI446X_INT_STATUS( buffer );
+			}while(!( buffer[3] & ( 1<<5 ) ) );
+
+			SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
+
+		}
+	}
 }

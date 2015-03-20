@@ -25,6 +25,13 @@
 
 #define  PACKET_LENGTH      0 //0-64, if = 0: variable mode, else: fixed mode
 
+void SI_CSN_LOW();
+void SI_CSN_HIGH();
+void SI_SDN_LOW();
+void SI_SDN_HIGH();
+unsigned char SPI_ExchangeByte( unsigned char input );
+void SPI_Initial( void );
+void GPIO_Initial( void );
 
 
 /*
@@ -34,19 +41,19 @@
 */
 
 /*Read the PART_INFO of the device, 8 bytes needed*/
-void SI446X_PART_INFO( INT8U *buffer );
+void SI446X_PART_INFO( unsigned char *buffer );
 
 /*Read the FUNC_INFO of the device, 7 bytes needed*/
-void SI446X_FUNC_INFO( INT8U *buffer );
+void SI446X_FUNC_INFO( unsigned char *buffer );
 
 /*Send a command to the device*/
-void SI446X_CMD( INT8U *cmd, INT8U cmdsize );
+void SI446X_CMD( unsigned char *cmd, unsigned char cmdsize );
 
 /*Read the INT status of the device, 9 bytes needed*/
-void SI446X_INT_STATUS( INT8U *buffer );
+void SI446X_INT_STATUS( unsigned char *buffer );
 
 /*Read the PROPERTY of the device*/
-void SI446X_GET_PROPERTY_X( SI446X_PROPERTY GROUP_NUM, INT8U NUM_PROPS, INT8U *buffer  );
+void SI446X_GET_PROPERTY_X( SI446X_PROPERTY GROUP_NUM, unsigned char NUM_PROPS, unsigned char *buffer  );
 
 /*configuration the device*/
 void SI446X_CONFIG_INIT( void );
@@ -55,45 +62,45 @@ void SI446X_CONFIG_INIT( void );
 void SI446X_RESET( void );
 
 /*write data to TX fifo*/
-void SI446X_W_TX_FIFO( INT8U *txbuffer, INT8U size );
+void SI446X_W_TX_FIFO( unsigned char *txbuffer, unsigned char size );
 
 /*start TX command*/
-void SI446X_START_TX( INT8U channel, INT8U condition, INT16U tx_len );
+void SI446X_START_TX( unsigned char channel, unsigned char condition, unsigned int tx_len );
 
 /*read RX fifo*/
-INT8U SI446X_READ_PACKET( INT8U *buffer );
+unsigned char SI446X_READ_PACKET( unsigned char *buffer );
 
 /*start RX state*/
-void SI446X_START_RX( INT8U channel, INT8U condition, INT16U rx_len,
-                      INT8U n_state1, INT8U n_state2, INT8U n_state3 );
+void SI446X_START_RX( unsigned char channel, unsigned char condition, unsigned int rx_len,
+                      unsigned char n_state1, unsigned char n_state2, unsigned char n_state3 );
 
 /*read packet information*/
-void SI446X_PKT_INFO( INT8U *buffer, INT8U FIELD, INT16U length, INT16U diff_len );
+void SI446X_PKT_INFO( unsigned char *buffer, unsigned char FIELD, unsigned int length, unsigned int diff_len );
 
 /*read fifo information*/
-void SI446X_FIFO_INFO( INT8U *buffer );
+void SI446X_FIFO_INFO( unsigned char *buffer );
 
 /*Power up the device*/
-void SI446X_POWER_UP( INT32U f_xtal );
+void SI446X_POWER_UP( unsigned long f_xtal );
 
 /*send a packet*/
-void SI446X_SEND_PACKET( INT8U *txbuffer, INT8U size, INT8U channel, INT8U condition );
+void SI446X_SEND_PACKET( unsigned char *txbuffer, unsigned char size, unsigned char channel, unsigned char condition );
 
 /*Set the PROPERTY of the device*/
-void SI446X_SET_PROPERTY_X( SI446X_PROPERTY GROUP_NUM, INT8U NUM_PROPS, INT8U *PAR_BUFF );
+void SI446X_SET_PROPERTY_X( SI446X_PROPERTY GROUP_NUM, unsigned char NUM_PROPS, unsigned char *PAR_BUFF );
 
 /*config the CRC, PROPERTY 0x1200*/
-void SI446X_CRC_CONFIG( INT8U PKT_CRC_CONFIG );
+void SI446X_CRC_CONFIG( unsigned char PKT_CRC_CONFIG );
 
 /*Get the PROPERTY of the device, only 1 byte*/
-INT8U SI446X_GET_PROPERTY_1( SI446X_PROPERTY GROUP_NUM );
+unsigned char SI446X_GET_PROPERTY_1( SI446X_PROPERTY GROUP_NUM );
 
 /*Set the PROPERTY of the device, only 1 byte*/
-void SI446X_SET_PROPERTY_1( SI446X_PROPERTY GROUP_NUM, INT8U proirity );
+void SI446X_SET_PROPERTY_1( SI446X_PROPERTY GROUP_NUM, unsigned char proirity );
 
 /*config the GPIOs, IRQ, SDO*/
-void SI446X_GPIO_CONFIG( INT8U G0, INT8U G1, INT8U G2, INT8U G3,
-                         INT8U IRQ, INT8U SDO, INT8U GEN_CONFIG );
+void SI446X_GPIO_CONFIG( unsigned char G0, unsigned char G1, unsigned char G2, unsigned char G3,
+                         unsigned char IRQ, unsigned char SDO, unsigned char GEN_CONFIG );
 
 /*reset the RX FIFO of the device*/
 void SI446X_RX_FIFO_RESET( void );
