@@ -42,6 +42,7 @@ static void IntDefaultHandler(void);
 //
 //*****************************************************************************
 extern void USART1_IRQHandler(void);
+extern void button_irq();
 
 //*****************************************************************************
 //
@@ -88,7 +89,7 @@ void (* const g_pfnVectors[])(void) =
 	IntDefaultHandler,                      // RTC_IRQHandler
 	IntDefaultHandler,                      // FLASH_IRQHandler
 	IntDefaultHandler,                      // RCC_IRQHandler
-	IntDefaultHandler,                      // EXTI0_1_IRQHandler
+	button_irq,                      		// EXTI0_1_IRQHandler
 	IntDefaultHandler,                      // EXTI2_3_IRQHandler
 	IntDefaultHandler,                      // EXTI4_15_IRQHandler
 	0,                      				// Reserved

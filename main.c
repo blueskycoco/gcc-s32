@@ -11,7 +11,7 @@
 #define UART1_GPIO_RX_SOURCE	GPIO_PinSource3
 #define UART1_GPIO_AF			GPIO_AF_1
 #define UART1_GPIO				GPIOA
-
+int pressed=0;
 int uart_config()
 {
 	USART_InitTypeDef USART_InitStructure;
@@ -85,6 +85,38 @@ void led_init()
 	GPIO_SetBits( GPIOA, GPIO_Pin_9 );
 	GPIO_SetBits( GPIOA, GPIO_Pin_10 );
 }
+void button_init()
+{
+	GPIO_InitTypeDef  GPIO_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStructure;
+	EXTI_InitTypeDef EXTI_InitStructure;
+
+
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+	GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_1;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource1);
+	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_1_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPriority = 1;
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&NVIC_InitStructure);
+	EXTI_InitStructure.EXTI_Line = EXTI_Line1;
+	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+	EXTI_Init(&EXTI_InitStructure);
+	EXTI_ClearITPendingBit(EXTI_Line1);
+}
+void button_irq()
+{
+	if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_1)==Bit_SET)
+		pressed=1;
+	else
+		pressed=0;
+}
 //*****************************************************************************
 //
 // This example demonstrates how to send a string of data to the UART.
@@ -102,7 +134,7 @@ main(void)
 	si4464_init();
 	while( 1 )
     {
-		rt_hw_led1_off();
+		//rt_hw_led1_off();
 		#if 0
 		SI446X_INT_STATUS( buffer );
 		if( buffer[3] & ( 1<<4 ) )
@@ -120,11 +152,23 @@ main(void)
 
 		}
 		#endif
-		si446x_rw("1234",4,rx_buf,&rx_len);
+		if(pressed==1)
+			si446x_rw("1234",4,rx_buf,&rx_len);
+		else
+			si446x_rw("4321",4,rx_buf,&rx_len);
 		if(rx_len!=0)
 		{
-			rt_hw_led1_on();
-			uart_send('A');
+			if(rx_buf[0]=='1'&&rx_buf[0]=='2'&&rx_buf[0]=='3'&&rx_buf[0]=='4')
+			{
+				rt_hw_led1_on();
+				uart_send('B');
+			}
+			else
+			{
+				rt_hw_led1_on();	
+				uart_send('A');
+			}
 		}
+		delay_ms(100);
 	}
 }
