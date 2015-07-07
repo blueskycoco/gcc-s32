@@ -4,9 +4,12 @@ static unsigned short fac_ms=0;//ms延时倍乘数
 //初始化延迟函数
 void delay_init(unsigned char SYSCLK)//SYSCLK =48
 {
+ SysTick->VAL=0X00000000;           //清空计数器     
  SysTick->CTRL&=0xfffffffb;//选择内部时钟 HCLK/8
  fac_us=SYSCLK/8;      
  fac_ms=(unsigned short)fac_us*1000;
+ //SysTick->CTRL&=0XFFFFFFFE;         //关闭计数器
+ 
 }            
 //延时Nms
 //注意Nms的范围
@@ -19,6 +22,7 @@ void delay_ms(unsigned short nms)
  while(!(SysTick->CTRL&(1<<16)));   //等待时间到达 
  SysTick->CTRL&=0XFFFFFFFE;         //关闭计数器
  SysTick->VAL=0X00000000;           //清空计数器     
+ 
 }   
 //延时us           
 void delay_us(unsigned long Nus)

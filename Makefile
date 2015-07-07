@@ -49,7 +49,7 @@ all: ${COMPILER}/uart_echo.axf
 clean:
 	@rm -rf ${COMPILER} ${wildcard *~}
 install:
-	openocd -f openocd.cfg -c "flash_image"
+	openocd -f openocd.cfg -c "flash_image" -d 3
 
 #
 # The rule to create the target directory.
@@ -62,12 +62,9 @@ ${COMPILER}:
 #
 ${COMPILER}/uart_echo.axf: ${COMPILER}/startup_${COMPILER}.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/system_stm32f0xx.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/socket.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/main.o
+${COMPILER}/uart_echo.axf: ${COMPILER}/syscalls.o
 ${COMPILER}/uart_echo.axf: ${COMPILER}/delay.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/i2c_gpio.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/si446x_interface.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/si446x_common.o
 ${COMPILER}/uart_echo.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
 ${COMPILER}/uart_echo.axf: stm32f030.ld
 SCATTERgcc_uart_echo=stm32f030.ld

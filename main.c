@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 #include <stm32f0xx.h>
 #include "socket.h"
@@ -62,6 +63,21 @@ int uart_send(unsigned char byte)
 {
 	while (!(USART1->ISR & USART_FLAG_TXE));
 	USART1->TDR = byte;
+	return 0;
+}
+int uart_read()
+{
+	int ch = -1;
+	if (USART1->ISR & USART_FLAG_RXNE)
+	{
+		ch = USART1->RDR & 0xff;
+	}
+	
+	return ch;
+}
+void uart_wait_rcv()
+{
+	while(!(USART1->ISR & USART_FLAG_RXNE));
 }
 void led_init()
 {
@@ -126,49 +142,22 @@ void button_irq()
 int
 main(void)
 {
-	unsigned char rx_buf[255];
-	int rx_len;
+	unsigned char *rx_buf;
+	int rx_len=0;
 	delay_init(48);
 	uart_config();
 	led_init();
-	si4464_init();
-	while( 1 )
+	//si4464_init();
+	rx_buf=malloc(255);
+	while(1)
     {
-		//rt_hw_led1_off();
-		#if 0
-		SI446X_INT_STATUS( buffer );
-		if( buffer[3] & ( 1<<4 ) )
-		{			
-			int  length = SI446X_READ_PACKET( buffer );
-			rt_hw_led1_on();
-			uart_send('A');
-			SI446X_SEND_PACKET( buffer, length, 0, 0 );
-			do
-			{ 	
-				SI446X_INT_STATUS( buffer );
-			}while(!( buffer[3] & ( 1<<5 ) ) );
-
-			SI446X_START_RX( 0, 0, PACKET_LENGTH,0,0,3 );
-
-		}
-		#endif
-		if(pressed==1)
-			si446x_rw("1234",4,rx_buf,&rx_len);
-		else
-			si446x_rw("4321",4,rx_buf,&rx_len);
-		if(rx_len!=0)
-		{
-			if(rx_buf[0]=='1'&&rx_buf[0]=='2'&&rx_buf[0]=='3'&&rx_buf[0]=='4')
-			{
-				rt_hw_led1_on();
-				uart_send('B');
-			}
-			else
-			{
-				rt_hw_led1_on();	
-				uart_send('A');
-			}
-		}
+		rt_hw_led1_off();
+		sprintf(rx_buf,"led off %d\n",rx_len++);
+		printf(rx_buf);
+		delay_ms(100);
+		rt_hw_led1_on();
+		sprintf(rx_buf,"led on %d\n",rx_len);
+		printf(rx_buf);
 		delay_ms(100);
 	}
 }

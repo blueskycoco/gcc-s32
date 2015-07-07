@@ -54,4 +54,8 @@ SECTIONS
         *(COMMON)
         _ebss = .;
     } > SRAM
+    . = ALIGN(8);
+	_end = .; /* for _sbrk */
+	. = . + 0x1000; /* 64kB of heap memory */
+	__cs3_heap_end = .; /* for _sbrk */
 }
