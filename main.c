@@ -35,7 +35,7 @@ int uart_config()
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 	GPIO_Init(UART1_GPIO, &GPIO_InitStructure);
-#if 0
+#if 1
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	/* Enable the USART Interrupt */
@@ -54,8 +54,8 @@ int uart_config()
 
 	/* Enable USART */
 	/* enable interrupt */
-	//USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
-	//NVIC_EnableIRQ(USART1_IRQn);
+	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE);
+	NVIC_EnableIRQ(USART1_IRQn);
 	USART_Cmd(USART1, ENABLE);
 	return 0;
 }
@@ -77,7 +77,11 @@ int uart_read()
 }
 void uart_wait_rcv()
 {
-	while(!(USART1->ISR & USART_FLAG_RXNE));
+	printf("waiting data\n");
+
+	while(!(USART1->ISR & USART_FLAG_RXNE))
+		delay_ms(1);
+	printf("comint data\n");
 }
 void led_init()
 {
@@ -138,6 +142,27 @@ void button_irq()
 // This example demonstrates how to send a string of data to the UART.
 //
 //*****************************************************************************
+extern char *heap_end; /* Defined in syscalls.c */
+ 
+void c_entry() {
+ char c;
+ char *ptr = NULL;
+ size_t alloc_size = 1;
+ do {
+  c =getchar();
+  printf("%d: %c\n", c, c);
+ 
+  ptr = realloc(ptr, alloc_size);
+  if(ptr == NULL) {
+   puts("Out of memory!\nProgram halting.");
+   for(;;);
+  } else {
+   printf("new alloc of %d bytes at address 0x%X\n", alloc_size, (unsigned int)ptr);
+   alloc_size <<= 1;
+   printf("Heap end = 0x%X\n", (unsigned int)heap_end);
+  }
+ } while (1);
+}
 
 int
 main(void)
@@ -149,15 +174,17 @@ main(void)
 	led_init();
 	//si4464_init();
 	rx_buf=malloc(255);
+	//memcpy(rx_buf,rx,10);
+	//c_entry();
 	while(1)
     {
 		rt_hw_led1_off();
-		sprintf(rx_buf,"led off %d\n",rx_len++);
-		printf(rx_buf);
+		printf("led off %d\n",rx_len++);
+		//printf(rx_buf);
 		delay_ms(100);
 		rt_hw_led1_on();
-		sprintf(rx_buf,"led on %d\n",rx_len);
-		printf(rx_buf);
+		printf("led on %d\n",rx_len);
+		//printf(rx_buf);
 		delay_ms(100);
 	}
 }

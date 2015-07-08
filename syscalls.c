@@ -36,7 +36,7 @@ int _read(int file, char *ptr, int len) {
   return todo;
 }
 
-static char *heap_end = 0;
+char *heap_end = 0;
 caddr_t _sbrk(int incr) {
   extern char _end; /* Defined by the linker */
   extern char __cs3_heap_end; /* Defined by the linker */
