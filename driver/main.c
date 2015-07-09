@@ -89,15 +89,15 @@ void led_init()
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF|RCC_AHBPeriph_GPIOA, ENABLE);
     /* Configure the GPIO_LED pin */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
-    //GPIO_Init(GPIOA, &GPIO_InitStructure);
-	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    //GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
+    GPIO_Init(GPIOF, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+    GPIO_Init(GPIOF, &GPIO_InitStructure);
 	//GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
 	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     //GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -108,8 +108,10 @@ void led_init()
 	GPIO_SetBits(GPIOA, GPIO_Pin_3);	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;	    
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	//GPIO_SetBits( GPIOA, GPIO_Pin_9 );
-	//GPIO_SetBits( GPIOA, GPIO_Pin_10 );
+	GPIO_SetBits(GPIOF, GPIO_Pin_1);
+	GPIO_ResetBits(GPIOF, GPIO_Pin_0);
+	delay_ms(10);
+	GPIO_SetBits(GPIOF, GPIO_Pin_0);
 }
 void button_init()
 {
@@ -149,13 +151,13 @@ main(void)
 	unsigned char aic12k[10]={0x04,0x8a,0x04,0x01,0x05,0x30,0x70,0x06,0x02};	
 	delay_init(48);
 	uart_config();
-	led_init();
-	cmx865a_init();	
+	led_init(); 
 	i2c_write(0x40,&aic12k[0],2);
 	i2c_write(0x40,&aic12k[2],2);
 	i2c_write(0x40,&aic12k[4],3);
-	i2c_write(0x40,&aic12k[7],2); 
-	printf("system init\n");
+	i2c_write(0x40,&aic12k[7],2);
+	cmx865a_init();	
+	//printf("system init\n");
 	while(1)
     {
 		rt_hw_led1_off();
