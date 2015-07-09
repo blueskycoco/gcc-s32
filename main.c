@@ -173,17 +173,17 @@ main(void)
 	uart_config();
 	led_init();
 	//si4464_init();
-	rx_buf=malloc(255);
+	//rx_buf=malloc(255);
 	//memcpy(rx_buf,rx,10);
 	//c_entry();
 	while(1)
     {
 		rt_hw_led1_off();
-		printf("led off %d\n",rx_len++);
+		//printf("led off %d\n",rx_len++);
 		//printf(rx_buf);
 		delay_ms(100);
 		rt_hw_led1_on();
-		printf("led on %d\n",rx_len);
+		//printf("led on %d\n",rx_len);
 		//printf(rx_buf);
 		delay_ms(100);
 	}
