@@ -1,5 +1,6 @@
 #include <stm32f0xx.h>
 #include "cmx865a.h"
+#include <stdio.h>
 #define HW_SPI 0
 SPI_InitTypeDef  SPI_InitStructure;
 unsigned char send_data=0;
@@ -287,7 +288,7 @@ void cmx865a_isr(void)
 	static unsigned char  k=0; 
 	static unsigned short  fsk_long=0; 
 	read_cmx865a(Status_addr,(unsigned char *)&i,2);
-	//printf("cmx865a_isr intr %x\r\n",i);
+	printf("cmx865a_isr intr %x\r\n",i);
 	//if(GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1)==Bit_RESET)
 	//GPIO_SetBits(GPIOA, GPIO_Pin_9);
 	if(DTMF_MODE)
@@ -404,13 +405,13 @@ void cmx865a_isr(void)
 				CID_RX_count=max_buff-1;
 				}
 				*/
-				//printf("Got FSK Num %d %c\r\n",j,j);
+				printf("Got FSK Num %d %c\r\n",j,j);
 			}
 			else
 			{
 				phone_state|=CID_Received;
 				CID_state=Waite;
-				//printf("finish receive phone num\r\n");
+				printf("finish receive phone num\r\n");
 			}
 			break;
 		}	
@@ -484,13 +485,13 @@ void cmx865a_init(void)
 			{
 				write_cmx865a(Receive_Mode_addr, Received_DTMF|temp_int,2);//????
 			//	phone_state |= CID_Way;//??DTMF??
-				//printf("DTMF Re\n");
+				printf("DTMF Re\n");
 			}
 			else
 			{
 				write_cmx865a(Receive_Mode_addr, Received_FSK|temp_int,2);//????
 			//	phone_state &=~ CID_Way;//??FSK??
-				//printf("FSK Re\n");
+				printf("FSK Re\n");
 			}
 		//}
 		//else//??????

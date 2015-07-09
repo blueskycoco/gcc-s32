@@ -155,7 +155,7 @@ main(void)
 	i2c_write(0x40,&aic12k[2],2);
 	i2c_write(0x40,&aic12k[4],3);
 	i2c_write(0x40,&aic12k[7],2); 
-//	printf("here\n");
+	printf("system init\n");
 	while(1)
     {
 		rt_hw_led1_off();
