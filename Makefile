@@ -36,12 +36,13 @@ include ${ROOT}/makedefs
 # Where to find header files that do not live in the source directory.
 #
 IPATH=./inc
-
+VPATH=./driver
+VPATH+=./driverlib
 #
 # The default rule, which causes the uart_echo example to be built.
 #
 all: ${COMPILER}
-all: ${COMPILER}/uart_echo.axf
+all: ${COMPILER}/pstn.axf
 
 #
 # The rule to clean out all the build products.
@@ -60,15 +61,40 @@ ${COMPILER}:
 #
 # Rules for building the uart_echo example.
 #
-${COMPILER}/uart_echo.axf: ${COMPILER}/startup_${COMPILER}.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/system_stm32f0xx.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/main.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/syscalls.o
-${COMPILER}/uart_echo.axf: ${COMPILER}/delay.o
-${COMPILER}/uart_echo.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
-${COMPILER}/uart_echo.axf: stm32f030.ld
-SCATTERgcc_uart_echo=stm32f030.ld
-ENTRY_uart_echo=ResetISR
+${COMPILER}/pstn.axf: ${COMPILER}/startup_${COMPILER}.o
+${COMPILER}/pstn.axf: ${COMPILER}/system_stm32f0xx.o
+${COMPILER}/pstn.axf: ${COMPILER}/main.o
+${COMPILER}/pstn.axf: ${COMPILER}/syscalls.o
+${COMPILER}/pstn.axf: ${COMPILER}/delay.o
+${COMPILER}/pstn.axf: ${COMPILER}/cmx865a.o
+${COMPILER}/pstn.axf: ${COMPILER}/tlv320aic12k.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_adc.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_can.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_cec.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_comp.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_crc.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_crs.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_dac.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_dbgmcu.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_dma.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_exti.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_flash.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_gpio.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_i2c.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_iwdg.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_misc.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_pwr.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_rcc.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_rtc.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_spi.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_syscfg.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_tim.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_usart.o
+${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_wwdg.o
+#${COMPILER}/pstn.axf: ${ROOT}/driverlib/${COMPILER}/libdriver.a
+${COMPILER}/pstn.axf: stm32f030.ld
+SCATTERgcc_pstn=stm32f030.ld
+ENTRY_pstn=ResetISR
 CFLAGSgcc=-DUSE_STDPERIPH_DRIVER
 
 #

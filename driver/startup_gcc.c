@@ -43,7 +43,7 @@ static void IntDefaultHandler(void);
 //*****************************************************************************
 extern void USART1_IRQHandler(void);
 extern void button_irq();
-
+extern void EXTI0_1_IRQHandler();
 //*****************************************************************************
 //
 // The entry point for the application.
@@ -80,7 +80,7 @@ void (* const g_pfnVectors[])(void) =
 	IntDefaultHandler,                      // RTC_IRQHandler
 	IntDefaultHandler,                      // FLASH_IRQHandler
 	IntDefaultHandler,                      // RCC_IRQHandler
-	button_irq,                      		// EXTI0_1_IRQHandler
+	EXTI0_1_IRQHandler,                		// EXTI0_1_IRQHandler
 	IntDefaultHandler,                      // EXTI2_3_IRQHandler
 	IntDefaultHandler,                      // EXTI4_15_IRQHandler
 	0,                      				// Reserved

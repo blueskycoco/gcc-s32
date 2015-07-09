@@ -1,6 +1,9 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
+extern void uart_wait_rcv();
+extern int uart_read();
+extern int uart_send(unsigned char byte);
 int _close(int file) {
   return 0;
 }
@@ -64,10 +67,10 @@ int fputc(int ch, FILE *f)
 {
 	uart_send(ch);
 	return ch;
-}
+}/*
 int put_char(char *buf)
 {
-	char ch,i;
+	char ch=0,i=0;
 	for(i=0;i<strlen(buf);i++)
 	{
 		ch=buf[i];
@@ -76,5 +79,5 @@ int put_char(char *buf)
 		uart_send(ch&(unsigned short)0x01ff);
 	}
 	return ch;
-}
+}*/
 

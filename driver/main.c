@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stm32f0xx.h>
-#include "socket.h"
-#include "si446x.h"
+extern void cmx865a_init(void);
+extern void delay_ms(unsigned short nms);
+extern void delay_init(unsigned char SYSCLK);
+extern void i2c_write (unsigned char addr, unsigned char* buf, int len) ;
 #define rt_hw_led1_on()   GPIO_SetBits(GPIOF, GPIO_Pin_0)
 #define rt_hw_led1_off()  GPIO_ResetBits(GPIOF, GPIO_Pin_0)
 #define UART1_GPIO_TX			GPIO_Pin_2
@@ -77,11 +79,8 @@ int uart_read()
 }
 void uart_wait_rcv()
 {
-	printf("waiting data\n");
-
 	while(!(USART1->ISR & USART_FLAG_RXNE))
 		delay_ms(1);
-	printf("comint data\n");
 }
 void led_init()
 {
@@ -102,6 +101,13 @@ void led_init()
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
+	GPIO_SetBits(GPIOA, GPIO_Pin_2);	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;	   	
+	GPIO_Init(GPIOA, &GPIO_InitStructure);	
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		
+	GPIO_SetBits(GPIOA, GPIO_Pin_3);	
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;	    
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_SetBits( GPIOA, GPIO_Pin_9 );
 	GPIO_SetBits( GPIOA, GPIO_Pin_10 );
 }
@@ -137,54 +143,24 @@ void button_irq()
 	else
 		pressed=0;
 }
-//*****************************************************************************
-//
-// This example demonstrates how to send a string of data to the UART.
-//
-//*****************************************************************************
-extern char *heap_end; /* Defined in syscalls.c */
- 
-void c_entry() {
- char c;
- char *ptr = NULL;
- size_t alloc_size = 1;
- do {
-  c =getchar();
-  printf("%d: %c\n", c, c);
- 
-  ptr = realloc(ptr, alloc_size);
-  if(ptr == NULL) {
-   puts("Out of memory!\nProgram halting.");
-   for(;;);
-  } else {
-   printf("new alloc of %d bytes at address 0x%X\n", alloc_size, (unsigned int)ptr);
-   alloc_size <<= 1;
-   printf("Heap end = 0x%X\n", (unsigned int)heap_end);
-  }
- } while (1);
-}
-
 int
 main(void)
 {
-	unsigned char *rx_buf;
-	int rx_len=0;
+	unsigned char aic12k[10]={0x04,0x8a,0x04,0x01,0x05,0x30,0x70,0x06,0x02};	
 	delay_init(48);
 	uart_config();
 	led_init();
-	//si4464_init();
-	//rx_buf=malloc(255);
-	//memcpy(rx_buf,rx,10);
-	//c_entry();
+	cmx865a_init();	
+	i2c_write(0x40,&aic12k[0],2);
+	i2c_write(0x40,&aic12k[2],2);
+	i2c_write(0x40,&aic12k[4],3);
+	i2c_write(0x40,&aic12k[7],2); 
+//	printf("here\n");
 	while(1)
     {
 		rt_hw_led1_off();
-		//printf("led off %d\n",rx_len++);
-		//printf(rx_buf);
 		delay_ms(100);
 		rt_hw_led1_on();
-		//printf("led on %d\n",rx_len);
-		//printf(rx_buf);
 		delay_ms(100);
 	}
 }
