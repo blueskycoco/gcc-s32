@@ -71,8 +71,17 @@ void (* const g_pfnVectors[])(void) =
 	// The initial stack pointer
 	ResetISR,                               // The reset handler
 	NmiSR,                                  // The NMI handler
-	FaultISR,                               // The hard fault handler	
+	FaultISR,                               // The hard fault handler
+	0,                      				// The MPU fault handler
+	0,                      				// The bus fault handler
+	0,                      				// The usage fault handler
+	0,                                      // Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
+	0,                                      // Reserved
 	IntDefaultHandler,                      // SVCall handler
+	0,                      				// Debug monitor handler
+	0,                                      // Reserved
 	IntDefaultHandler,                      // The PendSV handler
 	IntDefaultHandler,                      // The SysTick handler
 	IntDefaultHandler,                      // WWDG_IRQHandler
@@ -80,7 +89,7 @@ void (* const g_pfnVectors[])(void) =
 	IntDefaultHandler,                      // RTC_IRQHandler
 	IntDefaultHandler,                      // FLASH_IRQHandler
 	IntDefaultHandler,                      // RCC_IRQHandler
-	EXTI0_1_IRQHandler,                		// EXTI0_1_IRQHandler
+	EXTI0_1_IRQHandler,                      // EXTI0_1_IRQHandler
 	IntDefaultHandler,                      // EXTI2_3_IRQHandler
 	IntDefaultHandler,                      // EXTI4_15_IRQHandler
 	0,                      				// Reserved

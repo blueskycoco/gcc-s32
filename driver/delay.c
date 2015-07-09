@@ -8,7 +8,8 @@ void delay_init(unsigned char SYSCLK)//SYSCLK =48
  SysTick->CTRL&=0xfffffffb;//选择内部时钟 HCLK/8
  fac_us=SYSCLK/8;      
  fac_ms=(unsigned short)fac_us*1000;
- //SysTick->CTRL&=0XFFFFFFFE;         //关闭计数器
+SysTick->CTRL&=0XFFFFFFFE;		   //关闭计数器
+SysTick->VAL=0X00000000;		   //清空计数器 	
  
 }            
 //延时Nms

@@ -6,12 +6,12 @@ extern void cmx865a_init(void);
 extern void delay_ms(unsigned short nms);
 extern void delay_init(unsigned char SYSCLK);
 extern void i2c_write (unsigned char addr, unsigned char* buf, int len) ;
-#define rt_hw_led1_on()   GPIO_SetBits(GPIOF, GPIO_Pin_0)
-#define rt_hw_led1_off()  GPIO_ResetBits(GPIOF, GPIO_Pin_0)
-#define UART1_GPIO_TX			GPIO_Pin_2
-#define UART1_GPIO_TX_SOURCE	GPIO_PinSource2
-#define UART1_GPIO_RX			GPIO_Pin_3
-#define UART1_GPIO_RX_SOURCE	GPIO_PinSource3
+#define rt_hw_led1_on()   GPIO_SetBits(GPIOA, GPIO_Pin_1)
+#define rt_hw_led1_off()  GPIO_ResetBits(GPIOA, GPIO_Pin_1)
+#define UART1_GPIO_TX			GPIO_Pin_9
+#define UART1_GPIO_TX_SOURCE	GPIO_PinSource9
+#define UART1_GPIO_RX			GPIO_Pin_10
+#define UART1_GPIO_RX_SOURCE	GPIO_PinSource10
 #define UART1_GPIO_AF			GPIO_AF_1
 #define UART1_GPIO				GPIOA
 int pressed=0;
@@ -92,15 +92,15 @@ void led_init()
     GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
-    GPIO_Init(GPIOF, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
     GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_4;
+    //GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    //GPIO_Init(GPIOA, &GPIO_InitStructure);
+	//GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
+    //GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_SetBits(GPIOA, GPIO_Pin_2);	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;	   	
 	GPIO_Init(GPIOA, &GPIO_InitStructure);	
@@ -108,8 +108,8 @@ void led_init()
 	GPIO_SetBits(GPIOA, GPIO_Pin_3);	
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;	    
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits( GPIOA, GPIO_Pin_9 );
-	GPIO_SetBits( GPIOA, GPIO_Pin_10 );
+	//GPIO_SetBits( GPIOA, GPIO_Pin_9 );
+	//GPIO_SetBits( GPIOA, GPIO_Pin_10 );
 }
 void button_init()
 {
