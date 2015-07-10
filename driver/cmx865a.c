@@ -25,7 +25,6 @@ enum CID_recive_state
        Recived_num,
 }CID_state=0;
 unsigned char phone_state;
-extern void delay_ms(unsigned short nms);
 void init_irq()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -269,7 +268,7 @@ void SPI1_IRQHandler(void)
 #endif
 void button_isr(void)
 {
-	/*printf("button_isr intr\r\n");
+	/*dprintf("button_isr intr\r\n");
 	
 	write_cmx865a(Transmit_Mode_addr, Transmit_DTMF|0x8,2);
 	write_cmx865a(Transmit_Mode_addr, Transmit_DTMF|0x6,2);
@@ -288,7 +287,7 @@ void cmx865a_isr(void)
 	static unsigned char  k=0; 
 	static unsigned short  fsk_long=0; 
 	read_cmx865a(Status_addr,(unsigned char *)&i,2);
-	//printf("cmx865a_isr intr %x\r\n",i);
+	//dprintf("cmx865a_isr intr %x\r\n",i);
 	//if(GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1)==Bit_RESET)
 	//GPIO_SetBits(GPIOA, GPIO_Pin_9);
 	if(DTMF_MODE)
@@ -311,7 +310,7 @@ void cmx865a_isr(void)
 					else if((j>0)&&(j<10))
 					{
 						CID_RX_buff[CID_RX_count++]=j;
-						//printf("Got DTMF Num %d %c\r\n",j,j);
+						//dprintf("Got DTMF Num %d %c\r\n",j,j);
 					}
 				}
 			//}
@@ -345,9 +344,9 @@ void cmx865a_isr(void)
 			{
 				CID_State=0;
 			}
-		//	printf("==> %d %x\r\n",j,j);
+		//	dprintf("==> %d %x\r\n",j,j);
 		//	if(j>='0'&&j<='9')
-			//	printf(">>%c\r\n",j);
+			//	dprintf(">>%c\r\n",j);
 #if 1
 	switch(CID_state)
 	{
@@ -405,13 +404,13 @@ void cmx865a_isr(void)
 				CID_RX_count=max_buff-1;
 				}
 				*/
-				printf("Got FSK Num %d %c\r\n",j,j);
+				dprintf("Got FSK Num %d %c\r\n",j,j);
 			}
 			else
 			{
 				phone_state|=CID_Received;
 				CID_state=Waite;
-				printf("finish receive phone num\r\n");
+				dprintf("finish receive phone num\r\n");
 			}
 			break;
 		}	
@@ -439,16 +438,16 @@ void test_cmx865a()
 	unsigned short data;
 	//while(1){
 		read_cmx865a(Status_addr,(unsigned char *)&data,2);
-		//printf("4 cmx865a_init status %x\n",data);
+		//dprintf("4 cmx865a_init status %x\n",data);
 		delay_ms(5);
 		data=0;
 		//write_cmx865a(Transmit_Data_addr,data,1);
-		//printf("cmx865a_init tx data %x\r\n",data);
+		//dprintf("cmx865a_init tx data %x\r\n",data);
 		read_cmx865a(Receive_Data_addr,(unsigned char *)&data,1);
-		//printf("4 cmx865a_init rx data %x\r\n\r\n",data);
+		//dprintf("4 cmx865a_init rx data %x\r\n\r\n",data);
 		//if(GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1)==Bit_RESET && flag){
 		//	GPIO_SetBits(GPIOA, GPIO_Pin_9);
-		//	printf("New call in\r\n");
+		//	dprintf("New call in\r\n");
 		//	flag=0;
 		//	}
 	//	delay_ms(100);
@@ -467,10 +466,10 @@ void cmx865a_init(void)
 	write_cmx865a(G_Control_Command_addr, NORMAL,2);
 
 	read_cmx865a(Status_addr,(unsigned char *)&data,2);
-	//printf("data %x\n",data);
+	//dprintf("data %x\n",data);
 	if(data&0x00ff)
 	{
-		//printf("init cmx865a failed");
+		//dprintf("init cmx865a failed");
 		return ;
 
 	}
@@ -484,13 +483,13 @@ void cmx865a_init(void)
 			{
 				write_cmx865a(Receive_Mode_addr, Received_DTMF|temp_int,2);//????
 			//	phone_state |= CID_Way;//??DTMF??
-				printf("DTMF Re\n");
+				dprintf("DTMF Re\n");
 			}
 			else
 			{
 				write_cmx865a(Receive_Mode_addr, Received_FSK|temp_int,2);//????
 			//	phone_state &=~ CID_Way;//??FSK??
-				printf("FSK Re\n");
+				dprintf("FSK Re\n");
 			}
 		//}
 		//else//??????

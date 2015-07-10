@@ -2,10 +2,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stm32f0xx.h>
-extern void cmx865a_init(void);
-extern void delay_ms(unsigned short nms);
-extern void delay_init(unsigned char SYSCLK);
-extern void i2c_write (unsigned char addr, unsigned char* buf, int len) ;
+#include "cmx865a.h"
+
 #define rt_hw_led1_on()   GPIO_SetBits(GPIOA, GPIO_Pin_1)
 #define rt_hw_led1_off()  GPIO_ResetBits(GPIOA, GPIO_Pin_1)
 #define UART1_GPIO_TX			GPIO_Pin_9
@@ -156,8 +154,8 @@ main(void)
 	i2c_write(0x40,&aic12k[2],2);
 	i2c_write(0x40,&aic12k[4],3);
 	i2c_write(0x40,&aic12k[7],2);
-	cmx865a_init();	
-	//printf("system init\n");
+	cmx865a_init();
+	dprintf("system init\n");
 	while(1)
     {
 		rt_hw_led1_off();

@@ -1,9 +1,9 @@
 #include <stm32f0xx.h>
+#include "cmx865a.h"
 
 #define SDA GPIO_Pin_2
 #define SCL GPIO_Pin_3
 GPIO_InitTypeDef  GPIO_InitStructure;
-extern void delay_ms(unsigned short nms);
 void delay()
 {
 	volatile int i=0,j=0;

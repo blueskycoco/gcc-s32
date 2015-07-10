@@ -8,7 +8,7 @@
 #define	Status_addr					0xe6
 #define	Programming_addr			0xe8
 
-#define		NULL			0xff
+//#define		NULL			0xff
 #define		NORMAL			0x8141//8141/815f
 #define		TXAOutDisable		0x4000
 #define         AnalogueLoopbackTest  0x0800
@@ -39,4 +39,13 @@
 #define		DTMF_A		0x1d
 #define		DTMF_B		0x1e
 #define		DTMF_C		0x1f
-
+void cmx865a_init(void);
+void delay_ms(unsigned short nms);
+void delay_init(unsigned char SYSCLK);
+void i2c_write (unsigned char addr, unsigned char* buf, int len) ;
+#define DBG 0
+#if DBG
+#define dprintf printf
+#else
+#define dprintf(...) 
+#endif

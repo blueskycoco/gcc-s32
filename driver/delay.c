@@ -1,4 +1,5 @@
 #include <stm32f0xx.h>
+#include "cmx865a.h"
 static unsigned char  fac_us=0;//us延时倍乘数
 static unsigned short fac_ms=0;//ms延时倍乘数
 //初始化延迟函数
