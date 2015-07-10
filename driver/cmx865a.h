@@ -43,7 +43,7 @@ void cmx865a_init(void);
 void delay_ms(unsigned short nms);
 void delay_init(unsigned char SYSCLK);
 void i2c_write (unsigned char addr, unsigned char* buf, int len) ;
-#define DBG 0
+#define DBG 1
 #if DBG
 #define dprintf printf
 #else
