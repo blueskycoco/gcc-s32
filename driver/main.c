@@ -3,7 +3,8 @@
 #include <stdbool.h>
 #include <stm32f0xx.h>
 #include "cmx865a.h"
-
+extern void init_spi();
+extern unsigned char write_spi(unsigned char data);
 #define rt_hw_led1_on()   GPIO_SetBits(GPIOA, GPIO_Pin_1)
 #define rt_hw_led1_off()  GPIO_ResetBits(GPIOA, GPIO_Pin_1)
 #define UART1_GPIO_TX			GPIO_Pin_9
@@ -146,21 +147,21 @@ void button_irq()
 int
 main(void)
 {
-	unsigned char aic12k[10]={0x04,0x8a,0x04,0x01,0x05,0x30,0x70,0x06,0x02};	
+	int i=0;
 	delay_init(48);
 	uart_config();
 	led_init(); 
-	i2c_write(0x40,&aic12k[0],2);
-	i2c_write(0x40,&aic12k[2],2);
-	i2c_write(0x40,&aic12k[4],3);
-	i2c_write(0x40,&aic12k[7],2);
-	cmx865a_init();
-	dprintf("system init\n");
+	init_spi();
+	//dprintf("system init\n");
 	while(1)
     {
+    	write_spi(i);
 		rt_hw_led1_off();
 		delay_ms(100);
 		rt_hw_led1_on();
 		delay_ms(100);
+		i++;
+		if(i==255)
+			i=0;
 	}
 }

@@ -69,8 +69,7 @@ ${COMPILER}/pstn.axf: ${COMPILER}/system_stm32f0xx.o
 ${COMPILER}/pstn.axf: ${COMPILER}/main.o
 ${COMPILER}/pstn.axf: ${COMPILER}/syscalls.o
 ${COMPILER}/pstn.axf: ${COMPILER}/delay.o
-${COMPILER}/pstn.axf: ${COMPILER}/cmx865a.o
-${COMPILER}/pstn.axf: ${COMPILER}/tlv320aic12k.o
+${COMPILER}/pstn.axf: ${COMPILER}/spi_master.o
 ${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_adc.o
 ${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_can.o
 ${COMPILER}/pstn.axf: ${COMPILER}/stm32f0xx_cec.o
