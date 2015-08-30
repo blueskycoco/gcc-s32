@@ -5,8 +5,8 @@
 #include "cmx865a.h"
 extern void init_spi();
 extern unsigned char write_spi(unsigned char data);
-#define rt_hw_led1_on()   GPIO_SetBits(GPIOA, GPIO_Pin_1)
-#define rt_hw_led1_off()  GPIO_ResetBits(GPIOA, GPIO_Pin_1)
+#define rt_hw_led1_on()   GPIO_ResetBits(GPIOF, GPIO_Pin_0)
+#define rt_hw_led1_off()  GPIO_SetBits(GPIOF, GPIO_Pin_0)
 #define UART1_GPIO_TX			GPIO_Pin_9
 #define UART1_GPIO_TX_SOURCE	GPIO_PinSource9
 #define UART1_GPIO_RX			GPIO_Pin_10
@@ -85,32 +85,14 @@ void led_init()
 {
     GPIO_InitTypeDef  GPIO_InitStructure;
     /* Enable the GPIO_LED Clock */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF|RCC_AHBPeriph_GPIOA, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOF, ENABLE);
     /* Configure the GPIO_LED pin */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
     GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0;
     GPIO_Init(GPIOF, &GPIO_InitStructure);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_Init(GPIOF, &GPIO_InitStructure);
-	//GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-	//GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
-    //GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOA, GPIO_Pin_2);	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_2;	   	
-	GPIO_Init(GPIOA, &GPIO_InitStructure);	
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;		
-	GPIO_SetBits(GPIOA, GPIO_Pin_3);	
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_3;	    
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
-	GPIO_SetBits(GPIOF, GPIO_Pin_1);
-	GPIO_ResetBits(GPIOF, GPIO_Pin_0);
-	delay_ms(10);
-	GPIO_SetBits(GPIOF, GPIO_Pin_0);
 }
 void button_init()
 {
@@ -149,17 +131,16 @@ main(void)
 {
 	int i=0;
 	delay_init(48);
-	uart_config();
+	//uart_config();
 	led_init(); 
 	init_spi();
-	//dprintf("system init\n");
 	while(1)
     {
     	write_spi(i);
-		rt_hw_led1_off();
-		delay_ms(100);
 		rt_hw_led1_on();
-		delay_ms(100);
+		delay_ms(10);
+		rt_hw_led1_off();
+		delay_ms(10);
 		i++;
 		if(i==255)
 			i=0;

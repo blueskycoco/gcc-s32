@@ -35,7 +35,7 @@ void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
-
+extern void SPI1_IRQHandler();
 //*****************************************************************************
 //
 // External declaration for the interrupt handler used by the application.
@@ -109,7 +109,7 @@ void (* const g_pfnVectors[])(void) =
 	IntDefaultHandler,                      // TIM17_IRQHandler
 	IntDefaultHandler,                      // I2C1_IRQHandler
 	IntDefaultHandler,                      // I2C2_IRQHandler
-	IntDefaultHandler,                      // SPI1_IRQHandler
+	SPI1_IRQHandler,                      // SPI1_IRQHandler
 	IntDefaultHandler,                      // SPI2_IRQHandler
 	IntDefaultHandler,                      // USART1_IRQHandler
 	IntDefaultHandler,                      // USART2_IRQHandler

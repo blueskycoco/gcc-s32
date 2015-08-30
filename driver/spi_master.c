@@ -80,12 +80,15 @@ void init_spi()
 }
 unsigned char write_spi(unsigned char data)
 {	send_data=data;
+    
+	  GPIO_ResetBits(GPIOA,GPIO_Pin_4);
 	/* Enable the Tx buffer empty interrupt */
 	SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, ENABLE);
 
 	/* Waiting until TX FIFO is empty */
 	while (SPI_GetTransmissionFIFOStatus(SPI1) != SPI_TransmissionFIFOStatus_Empty)
 	{}
+	  GPIO_SetBits(GPIOA,GPIO_Pin_4);
 }
 void SPI1_IRQHandler(void)
 {
@@ -93,7 +96,6 @@ unsigned char recv_data;
   /* SPI in Master Tramitter mode--------------------------------------- */
   if (SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_TXE) == SET)
   {
-    
       SPI_SendData8(SPI1, send_data);
       SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, DISABLE);
      
