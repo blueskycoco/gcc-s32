@@ -46,12 +46,12 @@ void init_spi()
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	/* SPI configuration -------------------------------------------------------*/
 	SPI_I2S_DeInit(SPI1);
-	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Direction = SPI_Direction_1Line_Tx;//SPI_Direction_2Lines_FullDuplex;
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-	SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
+	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
 	SPI_InitStructure.SPI_NSS = SPI_NSS_Hard;
-	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
+	SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_2;
 	SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
 	SPI_InitStructure.SPI_CRCPolynomial = 7;
 
@@ -78,16 +78,20 @@ void init_spi()
 	/* Enable the SPI peripheral */
 	SPI_Cmd(SPI1, ENABLE);
 }
-unsigned char write_spi(unsigned char data)
-{	send_data=data;
-    
+unsigned char write_spi(unsigned char *data,int len)
+{	
+    int i=0;
 	  GPIO_ResetBits(GPIOA,GPIO_Pin_4);
-	/* Enable the Tx buffer empty interrupt */
-	SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, ENABLE);
+	  for(i=0;i<len;i++)
+	 {
+		send_data=data[i];
+		/* Enable the Tx buffer empty interrupt */
+		SPI_I2S_ITConfig(SPI1, SPI_I2S_IT_TXE, ENABLE);
 
-	/* Waiting until TX FIFO is empty */
-	while (SPI_GetTransmissionFIFOStatus(SPI1) != SPI_TransmissionFIFOStatus_Empty)
-	{}
+		/* Waiting until TX FIFO is empty */
+		while (SPI_GetTransmissionFIFOStatus(SPI1) != SPI_TransmissionFIFOStatus_Empty)
+		{}
+	}
 	  GPIO_SetBits(GPIOA,GPIO_Pin_4);
 }
 void SPI1_IRQHandler(void)

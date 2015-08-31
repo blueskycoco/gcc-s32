@@ -4,7 +4,7 @@
 #include <stm32f0xx.h>
 #include "cmx865a.h"
 extern void init_spi();
-extern unsigned char write_spi(unsigned char data);
+extern unsigned char write_spi(unsigned char *data,int len);
 #define rt_hw_led1_on()   GPIO_ResetBits(GPIOF, GPIO_Pin_0)
 #define rt_hw_led1_off()  GPIO_SetBits(GPIOF, GPIO_Pin_0)
 #define UART1_GPIO_TX			GPIO_Pin_9
@@ -130,17 +130,20 @@ int
 main(void)
 {
 	int i=0;
+	unsigned char data[255]={0};
+	for(i=0;i<255;i++)
+		data[i]=i;
 	delay_init(48);
 	//uart_config();
 	led_init(); 
 	init_spi();
 	while(1)
     {
-    	write_spi(i);
 		rt_hw_led1_on();
-		delay_ms(10);
-		rt_hw_led1_off();
-		delay_ms(10);
+    	write_spi(data,255);
+		//delay_ms(50);
+		//rt_hw_led1_off();
+		//delay_ms(50);
 		i++;
 		if(i==255)
 			i=0;
