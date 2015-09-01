@@ -130,22 +130,22 @@ int
 main(void)
 {
 	int i=0;
-	unsigned char data[255]={0};
-	for(i=0;i<255;i++)
+	unsigned char data[256]={0};
+	for(i=0;i<256;i++)
 		data[i]=i;
 	delay_init(48);
 	//uart_config();
 	led_init(); 
 	init_spi();
+	rt_hw_led1_on();
 	while(1)
     {
-		rt_hw_led1_on();
-    	write_spi(data,255);
+    	write_spi(data,256);
 		//delay_ms(50);
 		//rt_hw_led1_off();
 		//delay_ms(50);
-		i++;
-		if(i==255)
-			i=0;
+		//i++;
+		//if(i>255)
+		//	i=0;
 	}
 }
