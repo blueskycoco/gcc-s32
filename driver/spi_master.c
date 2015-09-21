@@ -2,6 +2,7 @@
 #include <stdio.h>
 SPI_InitTypeDef  SPI_InitStructure;
 unsigned char send_data=0;
+unsigned short recv_data;
 void init_spi()
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -46,7 +47,7 @@ void init_spi()
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	/* SPI configuration -------------------------------------------------------*/
 	SPI_I2S_DeInit(SPI1);
-	SPI_InitStructure.SPI_Direction = SPI_Direction_1Line_Tx;//SPI_Direction_2Lines_FullDuplex;
+	SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;//SPI_Direction_2Lines_FullDuplex;
 	SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
 	SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
 	SPI_InitStructure.SPI_CPHA = SPI_CPHA_2Edge;
@@ -94,9 +95,14 @@ unsigned char write_spi(unsigned char *data,int len)
 	}
 	  GPIO_SetBits(GPIOA,GPIO_Pin_4);
 }
+unsigned short read_spi()
+{	
+	unsigned short tmp=recv_data;
+	recv_data=0;
+	return tmp;
+}
 void SPI1_IRQHandler(void)
 {
-unsigned char recv_data;
   /* SPI in Master Tramitter mode--------------------------------------- */
   if (SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_TXE) == SET)
   {
@@ -108,7 +114,7 @@ unsigned char recv_data;
   /* SPI in Master Receiver mode--------------------------------------- */
   if (SPI_I2S_GetITStatus(SPI1, SPI_I2S_IT_RXNE) == SET)
   {
-    recv_data=SPI_ReceiveData8(SPI1);
+    recv_data=SPI_I2S_ReceiveData16(SPI1);
   }
   
   /* SPI Error interrupt--------------------------------------- */

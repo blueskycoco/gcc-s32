@@ -134,18 +134,12 @@ main(void)
 	for(i=0;i<256;i++)
 		data[i]=i;
 	delay_init(48);
-	//uart_config();
 	led_init(); 
 	init_spi();
 	rt_hw_led1_on();
 	while(1)
     {
+    	//if(read_spi()==0xaa55)
     	write_spi(data,256);
-		//delay_ms(50);
-		//rt_hw_led1_off();
-		//delay_ms(50);
-		//i++;
-		//if(i>255)
-		//	i=0;
 	}
 }
